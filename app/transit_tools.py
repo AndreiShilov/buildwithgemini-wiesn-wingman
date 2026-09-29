@@ -262,3 +262,66 @@ def compute_live_transit_escape_route(
             "Follow illuminated overhead signs on Hackerbrücke if police direct one-way pedestrian flows."
         ]
     }
+
+
+def get_live_oktoberfest_news_and_alerts(
+    query_topic: Optional[str] = None,
+    limit: int = 5
+) -> Dict[str, Any]:
+    """Fetches real-time live Oktoberfest news, press reports, crowd alerts, and weather advisories via live RSS syndication.
+
+    Args:
+        query_topic: Optional topic filter (e.g. 'überfüllung', 'zelte', 'wetter', 'bierpreis', 'polizei', 'mvv', 'bahn').
+        limit: Max number of news items to return (default 5).
+
+    Returns:
+        A list of live news headlines, publications, timestamps, links, and crowd alert summaries.
+    """
+    import urllib.request
+    import xml.etree.ElementTree as ET
+    import urllib.parse
+
+    search_term = "Oktoberfest München Wiesn"
+    if query_topic:
+        search_term += f" {query_topic}"
+    
+    encoded_query = urllib.parse.quote(search_term)
+    rss_url = f"https://news.google.com/rss/search?q={encoded_query}&hl=de&gl=DE&ceid=DE:de"
+
+    items = []
+    try:
+        req = urllib.request.Request(rss_url, headers={"User-Agent": "WiesnWingman/1.0 (Mozilla/5.0)"})
+        with urllib.request.urlopen(req, timeout=4) as resp:
+            root = ET.fromstring(resp.read())
+            xml_items = root.findall(".//item")[:limit]
+            for it in xml_items:
+                title = it.find("title").text if it.find("title") is not None else ""
+                pubDate = it.find("pubDate").text if it.find("pubDate") is not None else ""
+                link = it.find("link").text if it.find("link") is not None else ""
+                source = it.find("source").text if it.find("source") is not None else "News"
+                
+                # Check for critical keywords in title
+                is_closure_alert = any(kw in title.lower() for kw in ["überfüllt", "überfüllung", "geschlossen", "gesperrt", "stopp", "einlass"])
+                
+                items.append({
+                    "title": title,
+                    "published": pubDate,
+                    "source": source,
+                    "link": link,
+                    "is_crowd_alert": is_closure_alert
+                })
+    except Exception as e:
+        return {
+            "status": "warning",
+            "message": f"Could not fetch live RSS news stream: {str(e)}",
+            "fallback_notice": "Using official Wiesn-Barometer and Firestore telemetry for tent occupancy.",
+            "articles": []
+        }
+
+    return {
+        "status": "success",
+        "query": search_term,
+        "count": len(items),
+        "articles": items,
+        "crowd_alert_detected": any(a["is_crowd_alert"] for a in items)
+    }

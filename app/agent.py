@@ -86,6 +86,7 @@ from app.image_gen_tools import (
 from app.transit_tools import (
     check_tent_occupancy_barometer,
     compute_live_transit_escape_route,
+    get_live_oktoberfest_news_and_alerts,
 )
 
 
@@ -184,6 +185,7 @@ root_agent = Agent(
         generate_bierbank_survivor_badge,
         check_tent_occupancy_barometer,
         compute_live_transit_escape_route,
+        get_live_oktoberfest_news_and_alerts,
     ],
     after_model_callback=a2ui_callback,
     after_agent_callback=generate_memories_callback,

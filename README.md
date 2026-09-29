@@ -57,6 +57,10 @@ WiesnWingman helps festival-goers and tech attendees navigate Oktoberfest beer t
   * Dynamically computes crowd-aware transit escape routes (`compute_live_transit_escape_route`).
   * Protects users from getting trapped in **Theresienwiese (U4/U5)** crowd bottlenecks and police gate closures (*Blockabfertigung*) by calculating walking escape paths to alternative stations (**Goetheplatz U3/U6**, **Schwanthalerhöhe U4/U5**, or **Hackerbrücke S-Bahn** trunk line).
 
+* **📰 Real-Time Wiesn News & Crowd Advisory Radar (`app/transit_tools.py`)**:
+  * Live RSS syndication parser (`get_live_oktoberfest_news_and_alerts`).
+  * Screens real-time regional and national press updates (Süddeutsche Zeitung, Spiegel, TZ, Stern, BR) for emergency closures, police alerts, beer prices, and crowd warnings.
+
 ---
 
 ## ☁️ Google Cloud Services Used
