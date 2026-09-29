@@ -61,6 +61,10 @@ WiesnWingman helps festival-goers and tech attendees navigate Oktoberfest beer t
   * Live RSS syndication parser (`get_live_oktoberfest_news_and_alerts`).
   * Screens real-time regional and national press updates (Süddeutsche Zeitung, Spiegel, TZ, Stern, BR) for emergency closures, police alerts, beer prices, and crowd warnings.
 
+* **☀️ Real-Time Meteorological Weather & Beer Garden Advisor (`app/agent.py`)**:
+  * Live weather observations and forecasts directly for Theresienwiese via **Open-Meteo API** (`get_weather`, `get_current_time`).
+  * Live Celsius temperatures, precipitation in mm, relative humidity, wind speed, and automated Bavarian Biergarten advice (outdoor bench vs. covered tent recommendations).
+
 ---
 
 ## ☁️ Google Cloud Services Used

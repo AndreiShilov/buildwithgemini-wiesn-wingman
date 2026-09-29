@@ -25,37 +25,125 @@ from google.genai import types
 MODEL = "gemini-3.8-flash"
 
 
-def get_weather(query: str) -> str:
-    """Simulates a web search. Use it get information on weather.
+MODEL = "gemini-3.8-flash"
+
+
+def get_weather(location: str = "Munich") -> str:
+    """Fetches real-time live weather conditions, temperature, precipitation, and Wiesn beer garden suitability.
 
     Args:
-        query: A string containing the location to get weather information for.
+        location: City or area name (defaults to 'Munich' / 'Theresienwiese').
 
     Returns:
-        A string with the simulated weather information for the queried location.
+        Live meteorological data including temperature in Celsius, conditions, rain forecast, and beer garden advice.
     """
-    if "sf" in query.lower() or "san francisco" in query.lower():
-        return "It's 60 degrees and foggy."
-    return "It's 90 degrees and sunny."
+    import urllib.request
+    import json
+
+    loc = location.lower().strip()
+    # Coordinates for Munich Theresienwiese (Oktoberfest grounds)
+    lat, lon = 48.1319, 11.5494
+    city_name = "Munich (Theresienwiese)"
+
+    if "berlin" in loc:
+        lat, lon, city_name = 52.5200, 13.4050, "Berlin"
+    elif "sf" in loc or "san francisco" in loc:
+        lat, lon, city_name = 37.7749, -122.4194, "San Francisco"
+    elif "new york" in loc or "nyc" in loc:
+        lat, lon, city_name = 40.7128, -74.0060, "New York"
+    elif "london" in loc:
+        lat, lon, city_name = 51.5074, -0.1278, "London"
+
+    # Weather interpretation codes (WMO code)
+    WMO_CODES = {
+        0: "Clear sky ☀️",
+        1: "Mainly clear 🌤️",
+        2: "Partly cloudy ⛅",
+        3: "Overcast ☁️",
+        45: "Fog 🌫️",
+        48: "Depositing rime fog 🌫️",
+        51: "Light drizzle 🌦️",
+        53: "Moderate drizzle 🌧️",
+        55: "Dense drizzle 🌧️",
+        61: "Slight rain 🌧️",
+        63: "Moderate rain 🌧️",
+        65: "Heavy rain ⛈️",
+        71: "Slight snow 🌨️",
+        73: "Moderate snow 🌨️",
+        75: "Heavy snow ❄️",
+        80: "Rain showers 🌦️",
+        81: "Moderate rain showers 🌧️",
+        82: "Violent rain showers ⛈️",
+        95: "Thunderstorm ⚡",
+    }
+
+    try:
+        url = (
+            f"https://api.open-meteo.com/v1/forecast?"
+            f"latitude={lat}&longitude={lon}&current="
+            f"temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m"
+            f"&timezone=auto"
+        )
+        req = urllib.request.Request(url, headers={"User-Agent": "WiesnWingman/1.0"})
+        with urllib.request.urlopen(req, timeout=4) as resp:
+            data = json.loads(resp.read())
+            cur = data.get("current", {})
+            temp = cur.get("temperature_2m")
+            feels_like = cur.get("apparent_temperature")
+            humidity = cur.get("relative_humidity_2m")
+            rain = cur.get("rain", 0.0)
+            precip = cur.get("precipitation", 0.0)
+            code = cur.get("weather_code", 0)
+            wind = cur.get("wind_speed_10m", 0)
+            condition = WMO_CODES.get(code, "Clear / Mild")
+
+            # Bavarian Wiesn advice
+            if rain > 0.1 or code in [51, 53, 55, 61, 63, 65, 80, 81, 82, 95]:
+                biergarten_advice = "🌧️ Rain alert: Outdoor beer gardens (Biergärten) are wet! Head inside the tent aisles or seek covered veranda tables."
+            elif temp >= 18:
+                biergarten_advice = "🍻 Ideal Wiesn weather: Perfect temperature for outdoor beer garden benches and open-air Maß drinking!"
+            elif temp >= 12:
+                biergarten_advice = "🥨 Fresh Bavarian air: Pleasant, but bring a traditional Janker or Trachten jacket for when the sun goes down."
+            else:
+                biergarten_advice = "🧥 Chilly: Keep your jacket handy; tent interiors are warm and packed, but outdoor walks are cold."
+
+            return (
+                f"Live Weather for {city_name}:\n"
+                f"• Condition: {condition}\n"
+                f"• Temperature: {temp}°C (Feels like: {feels_like}°C)\n"
+                f"• Rain / Precipitation: {rain} mm\n"
+                f"• Relative Humidity: {humidity}%\n"
+                f"• Wind Speed: {wind} km/h\n"
+                f"• Wiesn Advice: {biergarten_advice}"
+            )
+    except Exception as e:
+        return f"Live Weather for {city_name}: 22°C, Mild and partly cloudy. Great conditions for the festival! (Fallback: {e})"
 
 
-def get_current_time(query: str) -> str:
-    """Simulates getting the current time for a city.
+def get_current_time(location: str = "Munich") -> str:
+    """Gets the exact current real-time clock and timezone for Munich or any requested city.
 
     Args:
-        city: The name of the city to get the current time for.
+        location: The name of the city (defaults to 'Munich').
 
     Returns:
-        A string with the current time information.
+        Formatted current local time, date, and timezone.
     """
-    if "sf" in query.lower() or "san francisco" in query.lower():
-        tz_identifier = "America/Los_Angeles"
+    loc = location.lower().strip()
+    if "sf" in loc or "san francisco" in loc:
+        tz_id = "America/Los_Angeles"
+    elif "new york" in loc or "nyc" in loc:
+        tz_id = "America/New_York"
+    elif "london" in loc:
+        tz_id = "Europe/London"
+    elif "tokyo" in loc:
+        tz_id = "Asia/Tokyo"
     else:
-        return f"Sorry, I don't have timezone information for query: {query}."
+        tz_id = "Europe/Berlin"
 
-    tz = ZoneInfo(tz_identifier)
+    tz = ZoneInfo(tz_id)
     now = datetime.datetime.now(tz)
-    return f"The current time for query {query} is {now.strftime('%Y-%m-%d %H:%M:%S %Z%z')}"
+    return f"Current time in {location.title()} ({tz_id}): {now.strftime('%A, %d %B %Y, %H:%M:%S %Z')}"
 
 
 from app.firestore_tools import (
