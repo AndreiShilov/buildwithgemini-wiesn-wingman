@@ -12,12 +12,13 @@
     --bavarian-light: #eef6fd;
     --beer-gold: #f59e0b;
     --beer-amber: #d97706;
-    --bg: #f3f6fa;
+    --bg: #f8fafc;
     --card-bg: #ffffff;
-    --border: #dbe4ee;
-    --text-dark: #1e293b;
+    --border: #e2e8f0;
+    --text-dark: #0f172a;
     --text-muted: #64748b;
     --danger: #ef4444;
+    --sidebar-width: 330px;
   }
   * { box-sizing: border-box; }
   body {
@@ -28,13 +29,14 @@
     flex-direction: column;
     height: 100vh;
     color: var(--text-dark);
+    overflow: hidden;
   }
 
   /* --- Bavarian Festival Header --- */
   header {
     background: linear-gradient(135deg, var(--bavarian-deep) 0%, var(--bavarian-blue) 100%);
     color: #fff;
-    padding: 0.85rem 1.4rem;
+    padding: 0.7rem 1.25rem;
     box-shadow: 0 2px 8px rgba(0,62,107,0.2);
     border-bottom: 3px solid var(--beer-gold);
     display: flex;
@@ -42,6 +44,7 @@
     justify-content: space-between;
     flex-shrink: 0;
     gap: 0.8rem;
+    z-index: 30;
   }
   .brand {
     display: flex;
@@ -51,6 +54,11 @@
   .brand-logo {
     font-size: 1.8rem;
     line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .brand-logo:hover {
+    transform: scale(1.15) rotate(-6deg);
   }
   .brand-title {
     font-size: 1.2rem;
@@ -66,6 +74,19 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
+  }
+  .guide-toggle-btn {
+    display: none;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
   }
   .lang-switch {
     display: flex;
@@ -102,9 +123,303 @@
     align-items: center;
     gap: 0.3rem;
     white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .rauten-tag:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.28);
   }
 
-  /* --- Chat Area --- */
+  /* --- App Main Layout: Sidebar + Chat --- */
+  .app-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* --- Left Sidebar (Help & Possibilities) --- */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: #ffffff;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    z-index: 20;
+    transition: transform 0.25s ease-in-out;
+  }
+
+  /* --- Alois the Mascot Card in Sidebar --- */
+  .mascot-container {
+    background: linear-gradient(145deg, #eff6ff 0%, #fef3c7 100%);
+    border-bottom: 2px solid var(--beer-gold);
+    padding: 0.95rem 1rem 0.85rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,62,107,0.06);
+  }
+  .mascot-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .mascot-avatar-wrap {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid var(--beer-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.2);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .mascot-avatar-wrap:hover {
+    transform: scale(1.08) rotate(-4deg);
+  }
+  .mascot-avatar-wrap.cheering {
+    animation: alois-toast 0.8s ease-in-out;
+  }
+  @keyframes alois-toast {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.15) rotate(10deg); }
+    60% { transform: scale(1.12) rotate(-8deg); }
+    100% { transform: scale(1); }
+  }
+  .alois-svg {
+    width: 70px;
+    height: 70px;
+    display: block;
+    animation: alois-breathe 3.5s ease-in-out infinite;
+  }
+  @keyframes alois-breathe {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+  .alois-eye {
+    transform-origin: center;
+    animation: alois-blink 4s infinite;
+  }
+  @keyframes alois-blink {
+    0%, 96%, 100% { transform: scaleY(1); }
+    98% { transform: scaleY(0.1); }
+  }
+  .alois-stein {
+    transform-origin: 56px 54px;
+    animation: alois-stein-sway 2.5s ease-in-out infinite alternate;
+  }
+  @keyframes alois-stein-sway {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(8deg); }
+  }
+  .mascot-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .mascot-badge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    padding: 0.15rem 0.45rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+  }
+  .mascot-name {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--bavarian-deep);
+    margin: 0;
+    line-height: 1.2;
+  }
+  .mascot-speech-bubble {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.78rem;
+    color: #334155;
+    line-height: 1.35;
+    margin-top: 0.6rem;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .mascot-speech-bubble:hover {
+    border-color: var(--beer-gold);
+    background: #fffdfa;
+  }
+  .mascot-speech-bubble::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 28px;
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-top: 1px solid #cbd5e1;
+    border-left: 1px solid #cbd5e1;
+    transform: rotate(45deg);
+  }
+  .mascot-click-hint {
+    font-size: 0.68rem;
+    color: var(--beer-amber);
+    font-weight: 700;
+    margin-top: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  /* --- Sidebar Section Headers & Lists --- */
+  .sidebar-section-title {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--bavarian-deep);
+    margin: 0.85rem 0.85rem 0.45rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .sidebar-content {
+    padding: 0 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .feature-card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+    transition: all 0.18s ease;
+  }
+  .feature-card:hover {
+    border-color: var(--beer-gold);
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(0,62,107,0.06);
+  }
+  .feat-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .feat-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .feat-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--bavarian-deep);
+  }
+  .feat-desc {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+    margin-bottom: 0.5rem;
+  }
+  .feat-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    padding: 0.38rem 0.65rem;
+    background: var(--bavarian-light);
+    color: var(--bavarian-deep);
+    border: 1px solid #cce3f9;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    text-align: left;
+    justify-content: space-between;
+  }
+  .feat-action-btn:hover {
+    background: var(--bavarian-blue);
+    color: #ffffff;
+    border-color: var(--bavarian-blue);
+  }
+  .feat-action-btn span.arr {
+    font-size: 0.82rem;
+  }
+
+  /* --- Glossary Widget in Sidebar --- */
+  .glossary-card {
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+    margin-top: 0.3rem;
+  }
+  .glossary-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #92400e;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .glossary-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .glossary-pill {
+    background: #ffffff;
+    border: 1px solid #fde68a;
+    border-radius: 4px;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.7rem;
+    color: #78350f;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .glossary-pill:hover {
+    background: #fef3c7;
+  }
+  .glossary-pill b {
+    color: #b45309;
+  }
+
+  /* --- Sidebar Overlay for Mobile --- */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 15;
+  }
+
+  /* --- Main Chat Column --- */
+  .chat-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+    background: var(--bg);
+  }
+
   #log {
     flex: 1;
     overflow-y: auto;
@@ -351,6 +666,20 @@
     box-shadow: 0 2px 8px rgba(0,62,107,0.25);
   }
 
+  /* --- Toast Floating Particles --- */
+  .toast-particle {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.5rem;
+    z-index: 100;
+    animation: float-up 1.4s ease-out forwards;
+  }
+  @keyframes float-up {
+    0% { opacity: 1; transform: translateY(0) scale(0.8); }
+    50% { transform: translateY(-60px) scale(1.2) rotate(15deg); }
+    100% { opacity: 0; transform: translateY(-120px) scale(0.6) rotate(-15deg); }
+  }
+
   /* --- Recording Bar Notification --- */
   .recording-indicator {
     display: flex;
@@ -412,13 +741,36 @@
   .a2divider { border: none; border-top: 1px solid var(--border); margin: 0.5rem 0; width: 100%; }
   .a2img { max-width: 100%; border-radius: 10px; display: block; }
   .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: 1.25rem; line-height: 1; vertical-align: middle; color: var(--bavarian-blue); }
+
+  /* --- Responsive Styles --- */
+  @media (max-width: 960px) {
+    .guide-toggle-btn {
+      display: inline-flex;
+    }
+    .sidebar {
+      position: absolute;
+      top: 0; bottom: 0; left: 0;
+      transform: translateX(-100%);
+      box-shadow: 2px 0 16px rgba(0,0,0,0.15);
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .sidebar-overlay.open {
+      display: block;
+    }
+  }
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <span class="brand-logo">🥨</span>
+    <button type="button" class="guide-toggle-btn" id="guide-toggle-btn">
+      <span>🦁</span>
+      <span id="guide-toggle-label">Alois & Guide</span>
+    </button>
+    <span class="brand-logo" id="logo-icon" title="O'zapft is! Klick für Prost!">🥨</span>
     <div>
       <div class="brand-title">Wiesn Wingman</div>
       <div class="brand-sub" id="header-sub">Bierbank Copilot · Zelte, Rituale & Pacing</div>
@@ -429,57 +781,167 @@
       <button type="button" class="lang-btn active" id="btn-de" onclick="switchLang('de')">DE</button>
       <button type="button" class="lang-btn" id="btn-en" onclick="switchLang('en')">EN</button>
     </div>
-    <div class="rauten-tag">
-      <span>🍺</span>
-      <span id="header-badge">Oktoberfest Mode</span>
+    <div class="rauten-tag" id="toast-tag" title="Anstoßen mit Alois!">
+      <span>🍻</span>
+      <span id="header-badge">Prost Modus</span>
     </div>
   </div>
 </header>
 
-<div id="log">
-  <div id="starter-hero" class="starter-hero">
-    <div class="hero-crest">🎪 🍻 🥨</div>
-    <h1 class="hero-title" id="hero-title">Grias di beim Wiesn Wingman!</h1>
-    <p class="hero-desc" id="hero-desc">
-      Dein persönlicher Begleiter für Festzelte, Schunkel-Choreos, Bierbank-Networking und den nächsten Morgen. Klick auf ein Thema oder frag einfach drauflos:
-    </p>
-    <div class="tiles-grid" id="tiles-grid">
+<div class="app-layout">
+  <!-- Sidebar Overlay for mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Left Sidebar: Alois Mascot + Capabilities -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Animated Alois Mascot Widget -->
+    <div class="mascot-container" id="mascot-container">
+      <div class="mascot-header">
+        <div class="mascot-avatar-wrap" id="alois-wrap" title="Klick mich für einen Spruch & Toast!">
+          <!-- Custom High-Resolution Illustrated SVG: Alois the Bavarian Lion -->
+          <svg class="alois-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Lion Ears -->
+            <circle cx="28" cy="30" r="12" fill="#d97706" />
+            <circle cx="28" cy="30" r="7" fill="#fbcfe8" />
+            <circle cx="72" cy="30" r="12" fill="#d97706" />
+            <circle cx="72" cy="30" r="7" fill="#fbcfe8" />
+
+            <!-- Mane -->
+            <path d="M 20,52 C 12,38 24,18 42,16 C 58,14 78,20 82,38 C 88,52 86,72 74,84 C 60,94 36,92 24,80 C 16,70 14,60 20,52 Z" fill="#b45309" />
+            
+            <!-- Head Shape -->
+            <ellipse cx="50" cy="54" rx="27" ry="24" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" />
+            
+            <!-- White Snout / Cheeks -->
+            <ellipse cx="44" cy="62" rx="9" ry="7" fill="#fffbeb" />
+            <ellipse cx="56" cy="62" rx="9" ry="7" fill="#fffbeb" />
+            
+            <!-- Cute Nose -->
+            <polygon points="50,56 46,62 54,62" fill="#78350f" />
+            
+            <!-- Smiling Mouth & Tongue -->
+            <path d="M 44,64 Q 50,71 56,64" fill="none" stroke="#78350f" stroke-width="1.8" stroke-linecap="round" />
+            <path d="M 47,67 Q 50,72 53,67 Z" fill="#ef4444" />
+
+            <!-- Whiskers -->
+            <line x1="38" y1="62" x2="26" y2="60" stroke="#78350f" stroke-width="1" stroke-linecap="round" />
+            <line x1="38" y1="65" x2="27" y2="66" stroke="#78350f" stroke-width="1" stroke-linecap="round" />
+            <line x1="62" y1="62" x2="74" y2="60" stroke="#78350f" stroke-width="1" stroke-linecap="round" />
+            <line x1="62" y1="65" x2="73" y2="66" stroke="#78350f" stroke-width="1" stroke-linecap="round" />
+
+            <!-- Eyes (with blinking animation) -->
+            <g class="alois-eye" id="alois-eyes">
+              <!-- Left Eye -->
+              <ellipse cx="40" cy="48" rx="4.5" ry="6" fill="#1e293b" />
+              <circle cx="42" cy="46" r="1.8" fill="#ffffff" />
+              <!-- Right Eye -->
+              <ellipse cx="60" cy="48" rx="4.5" ry="6" fill="#1e293b" />
+              <circle cx="62" cy="46" r="1.8" fill="#ffffff" />
+            </g>
+
+            <!-- Bavarian Alpine Trachten Hat -->
+            <g id="alois-hat">
+              <!-- Hat base crown -->
+              <path d="M 33,32 C 34,16 66,16 67,32 Z" fill="#15803d" stroke="#166534" stroke-width="1.2" />
+              <!-- Blue & White Diamond Hat Ribbon -->
+              <path d="M 32,30 Q 50,33 68,30 L 69,33 Q 50,36 31,33 Z" fill="#0066b2" />
+              <path d="M 40,31 L 43,34 L 46,31 L 49,34 L 52,31 L 55,34 L 58,31" stroke="#ffffff" stroke-width="1.2" fill="none" />
+              <!-- Hat brim -->
+              <ellipse cx="50" cy="33" rx="22" ry="4.5" fill="#14532d" />
+              <!-- Gamsbart / Feather tuft -->
+              <path d="M 38,30 C 37,20 33,14 36,9 C 39,15 42,21 41,30 Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="0.8" />
+              <circle cx="39" cy="30" r="2.5" fill="#e2e8f0" stroke="#64748b" stroke-width="0.8" />
+            </g>
+
+            <!-- Bavarian Red Neckerchief -->
+            <path d="M 40,73 Q 50,83 60,73 L 50,86 Z" fill="#dc2626" />
+            <circle cx="50" cy="78" r="1.5" fill="#ffffff" />
+
+            <!-- Right Paw holding Beer Stein (Maßkrug) -->
+            <g class="alois-stein" id="alois-stein">
+              <!-- Glass Stein Body -->
+              <rect x="70" y="52" width="16" height="22" rx="3" fill="#bae6fd" opacity="0.85" stroke="#0284c7" stroke-width="1.2" />
+              <!-- Golden Beer inside -->
+              <rect x="71" y="58" width="14" height="15" rx="2" fill="#f59e0b" />
+              <!-- Handle -->
+              <path d="M 86,57 C 91,57 91,69 86,69" fill="none" stroke="#0284c7" stroke-width="2" />
+              <!-- White Foam Head -->
+              <ellipse cx="78" cy="56" rx="9" ry="4" fill="#ffffff" />
+              <circle cx="73" cy="54" r="3" fill="#ffffff" />
+              <circle cx="83" cy="54" r="3.5" fill="#ffffff" />
+              <!-- Paw hugging the stein -->
+              <ellipse cx="68" cy="64" rx="5" ry="4.5" fill="#fbbf24" stroke="#d97706" stroke-width="1" />
+            </g>
+          </svg>
+        </div>
+        <div class="mascot-info">
+          <div class="mascot-badge-tag">🦁 Wingman Mascot</div>
+          <h4 class="mascot-name" id="mascot-name">Alois der Löwe</h4>
+          <div class="mascot-click-hint" id="mascot-hint">🍻 Klick für Spruch & Toast!</div>
+        </div>
+      </div>
+
+      <!-- Mascot Interactive Speech Bubble -->
+      <div class="mascot-speech-bubble" id="mascot-bubble">
+        <span id="mascot-quote">"Grias di! Ich bin der Alois. Klick mich an für echte Wiesn-Geheimtipps oder stoß mit mir an!"</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section-title" id="side-title">🧭 Wiesn-Guide & Features</div>
+
+    <div class="sidebar-content" id="sidebar-content">
+      <!-- Feature cards populated dynamically -->
+    </div>
+  </aside>
+
+  <!-- Right Main Chat Column -->
+  <div class="chat-column">
+    <div id="log">
+      <div id="starter-hero" class="starter-hero">
+        <div class="hero-crest">🎪 🍻 🥨</div>
+        <h1 class="hero-title" id="hero-title">Grias di beim Wiesn Wingman!</h1>
+        <p class="hero-desc" id="hero-desc">
+          Dein persönlicher Begleiter für Festzelte, Schunkel-Choreos, Bierbank-Networking und den nächsten Morgen. Klick auf ein Thema oder frag einfach drauflos:
+        </p>
+        <div class="tiles-grid" id="tiles-grid">
+          <!-- Populated dynamically based on language -->
+        </div>
+      </div>
+    </div>
+
+    <div class="chips-bar" id="chips-bar">
       <!-- Populated dynamically based on language -->
     </div>
-  </div>
-</div>
 
-<div class="chips-bar" id="chips-bar">
-  <!-- Populated dynamically based on language -->
-</div>
+    <div class="form-wrapper">
+      <form id="form">
+        <input id="input" placeholder="Frag nach Zelten, Liedern, Pacing, Speisen oder nimm Audio auf…" autocomplete="off" autofocus>
+        
+        <!-- Audio recording button -->
+        <button type="button" class="icon-btn" id="mic-btn" title="Audio aufnehmen / Record audio">
+          <span id="mic-icon">🎙️</span>
+        </button>
 
-<div class="form-wrapper">
-  <form id="form">
-    <input id="input" placeholder="Frag nach Zelten, Liedern, Pacing, Speisen oder Bairisch…" autocomplete="off" autofocus>
-    
-    <!-- Audio recording button -->
-    <button type="button" class="icon-btn" id="mic-btn" title="Audio aufnehmen / Record audio">
-      <span id="mic-icon">🎙️</span>
-    </button>
+        <!-- Audio file upload fallback -->
+        <input type="file" id="audio-file-input" accept="audio/*" style="display:none">
+        <button type="button" class="icon-btn" id="upload-btn" title="Audio-Datei hochladen / Upload audio file">
+          <span>📁</span>
+        </button>
 
-    <!-- Audio file upload fallback -->
-    <input type="file" id="audio-file-input" accept="audio/*" style="display:none">
-    <button type="button" class="icon-btn" id="upload-btn" title="Audio-Datei hochladen / Upload audio file">
-      <span>📁</span>
-    </button>
+        <button id="send-btn" type="submit">
+          <span id="send-label">Senden</span>
+          <span>🍻</span>
+        </button>
+      </form>
 
-    <button id="send-btn" type="submit">
-      <span id="send-label">Senden</span>
-      <span>🍻</span>
-    </button>
-  </form>
-
-  <div id="rec-bar" class="recording-indicator" style="display:none;">
-    <div class="recording-left">
-      <div class="pulsing-dot"></div>
-      <span id="rec-status-text">Aufnahme läuft... (0s)</span>
+      <div id="rec-bar" class="recording-indicator" style="display:none;">
+        <div class="recording-left">
+          <div class="pulsing-dot"></div>
+          <span id="rec-status-text">Aufnahme läuft... (0s)</span>
+        </div>
+        <button type="button" class="cancel-btn" id="cancel-rec-btn">Abbrechen</button>
+      </div>
     </div>
-    <button type="button" class="cancel-btn" id="cancel-rec-btn">Abbrechen</button>
   </div>
 </div>
 
@@ -502,15 +964,116 @@ const audioFileInput = document.getElementById("audio-file-input");
 const recBar = document.getElementById("rec-bar");
 const recStatusText = document.getElementById("rec-status-text");
 const cancelRecBtn = document.getElementById("cancel-rec-btn");
+const sidebar = document.getElementById("sidebar");
+const sidebarOverlay = document.getElementById("sidebar-overlay");
+const sidebarContent = document.getElementById("sidebar-content");
+const guideToggleBtn = document.getElementById("guide-toggle-btn");
+const guideToggleLabel = document.getElementById("guide-toggle-label");
+const sideTitle = document.getElementById("side-title");
+const aloisWrap = document.getElementById("alois-wrap");
+const mascotBubble = document.getElementById("mascot-bubble");
+const mascotQuote = document.getElementById("mascot-quote");
+const mascotName = document.getElementById("mascot-name");
+const mascotHint = document.getElementById("mascot-hint");
+const toastTag = document.getElementById("toast-tag");
+const logoIcon = document.getElementById("logo-icon");
 
 let currentLang = "de";
+let quoteIdx = 0;
+
+const ALOIS_QUOTES = {
+  de: [
+    "\"Grias di! Ich bin der Alois. Klick mich an für echte Wiesn-Geheimtipps oder stoß mit mir an!\"",
+    "\"A Maß Bier ohne Schunkeln is wie a Brezn ohne Salz! Prost! 🍻\"",
+    "\"Eiserne Regel: Beim Anstoßen immer in die Augen schaugn – sonst gibt's 7 Jahre Pech! 👀\"",
+    "\"A Noagerl lasst ma stehn! Wer die warmen Reste austrinkt, wird als Noagerlzuzler verspottet! 🚫\"",
+    "\"Steh ruhig auf die Bank, aber NIEMALS auf den Tisch! Sonst gibt's Platzverweis von den Ordnern! ⚖️\"",
+    "\"Zwischendurch a Wasserl trinken, dann lacht der Kopf auch morgen früh beim Pitch! 💧\"",
+    "\"Wenn die Blaskapelle 'Sierra Madre' anstimmt, Feuerzeuge raus – dann ist bald Zapfenstreich! 🎺\"",
+    "\"Oans, zwoa, gsuffa! Host mi? Pack ma's! 🥨\""
+  ],
+  en: [
+    "\"Servus! I'm Alois the Lion, your beer bench copilot. Tap me for insider tips or a toast!\"",
+    "\"Golden Rule: Always maintain direct eye contact when clinking steins—otherwise 7 years bad luck! 👀\"",
+    "\"A Maß without swaying and singing is like a giant pretzel without salt! Prost! 🍻\"",
+    "\"Bench Etiquette: Dancing on benches is encouraged. Standing on tables gets you ejected immediately! ⚖️\"",
+    "\"Pro-tip: Sip a glass of water between steins, and your tech demo tomorrow will be legendary! 💧\"",
+    "\"Never drink the 'Noagerl' (the warm bottom dregs of the stein)—Bavarians always leave it behind! 🚫\"",
+    "\"When the brass band strikes up 'Sierra Madre', it's closing time—grab your friends and head home! 🎺\"",
+    "\"Oans, zwoa, drei, Gsuffa! Let's conquer the beer benches together! 🥨\""
+  ]
+};
 
 const CONTENT = {
   de: {
     sub: "Bierbank Copilot · Zelte, Rituale & Pacing",
-    badge: "Oktoberfest Mode",
+    badge: "Prost Modus",
+    guideBtn: "Alois & Guide",
+    mascotName: "Alois der Löwe",
+    mascotHint: "🍻 Klick für Spruch & Toast!",
+    sideTitle: "🧭 Was kann dein Wingman?",
     title: "Grias di beim Wiesn Wingman!",
     desc: "Dein persönlicher Begleiter für Festzelte, Schunkel-Choreos, Bierbank-Networking und den nächsten Morgen. Klick auf ein Thema oder frag einfach drauflos:",
+    features: [
+      {
+        icon: "🎪",
+        name: "Zelt-Finder & Vibe",
+        desc: "Vergleicht alle 14 Großzelte, Stimmung, Musikstil & Einlass-Chancen ohne Reservierung.",
+        btn: "Empfiehl mir ein Zelt",
+        prompt: "Welche Festzelte haben die beste Stimmung für Tech-Teams und wo hat man ohne Reservierung die besten Chancen?"
+      },
+      {
+        icon: "🎺",
+        name: "Lied-Erkennung & Rituale",
+        desc: "Erkennt Wiesn-Hits per Mikrofon 🎙️ oder Text. Liefert Lautschrift & Schunkel-Choreo.",
+        btn: "Ablauf 'Ein Prosit' zeigen",
+        prompt: "Wie läuft das 'Ein Prosit' Ritual genau ab und was sind die Songtexte zum Mitsingen?"
+      },
+      {
+        icon: "⏱️",
+        name: "Promille- & Pacing-Rechner",
+        desc: "Berechnet deinen Alkoholabbau nach Maß-Anzahl & Pacing für Termine am nächsten Morgen.",
+        btn: "Promille-Pacing prüfen",
+        prompt: "Ich habe 2 Maß Festbier getrunken und morgen früh um 9:00 Uhr einen wichtigen Pitch. Kannst du mein Pacing berechnen?"
+      },
+      {
+        icon: "🤝",
+        name: "Bierbank-Icebreaker",
+        desc: "Witzige, unaufdringliche Opener für Tischnachbarn, Tech-Gründer & internationale Gäste.",
+        btn: "3 Icebreaker generieren",
+        prompt: "Gib mir 3 lockere Bierbank-Icebreaker für Tech-Gründer und Konferenz-Gäste im Hacker-Pschorr Zelt."
+      },
+      {
+        icon: "🍗",
+        name: "Schmankerl & Rechnung",
+        desc: "Speisen-Empfehlungen (auch vegetarisch/vegan) und faire Trinkgeld-Berechnung.",
+        btn: "Schmankerl & Trinkgeld",
+        prompt: "Welche Schmankerl empfiehlst du im Zelt (auch vegetarisch) und wie teilt man die Rechnung mit Trinkgeld?"
+      },
+      {
+        icon: "🥨",
+        name: "Bairisch & Wiesn-Knigge",
+        desc: "Übersetzt Vokabeln und warnt vor No-Gos (wie auf Tischen tanzen oder Anstoßen ohne Blickkontakt).",
+        btn: "Dialekt & Knigge lernen",
+        prompt: "Was bedeuten die wichtigsten bayerischen Begriffe wie O'zapft is, Noagerl, Brezn und was sind die No-Gos?"
+      },
+      {
+        icon: "🏅",
+        name: "Bierbank-Orden",
+        desc: "Erstellt deine persönliche Wiesn-Überlebens-Auszeichnung als Erinnerung.",
+        btn: "Wiesn-Orden erstellen",
+        prompt: "Erstelle mir einen bayerischen Wiesn-Überlebens-Orden für 2 Maß Bier und erfolgreiches Schunkeln!"
+      }
+    ],
+    glossaryTitle: "💡 Schnelles Wiesn-Lexikon",
+    glossary: [
+      { term: "Maß", def: "1 Liter Bier im Glaskrug", prompt: "Wie viel Alkohol hat eine Maß Festbier und was kostet sie?" },
+      { term: "Noagerl", def: "Der warme Rest im Krug (nicht trinken!)", prompt: "Was ist ein Noagerl und warum trinkt man es nicht?" },
+      { term: "O'zapft is", def: "Es ist angezapft (Eröffnung)", prompt: "Erkläre die Tradition hinter 'O'zapft is'!" },
+      { term: "Gsuffa", def: "Eins, zwei, drei, getrunken!", prompt: "Was bedeutet Gsuffa und wann ruft man es?" },
+      { term: "Schunkeln", def: "Arm-in-Arm im Takt wiegen", prompt: "Wie schunkelt man richtig auf der Bierbank?" },
+      { term: "Brezn", def: "Große bayerische Laugenbrezel", prompt: "Was macht eine echte Wiesn-Brezn aus?" }
+    ],
     tiles: [
       {
         icon: "🎪",
@@ -568,9 +1131,73 @@ const CONTENT = {
   },
   en: {
     sub: "Beer Bench Copilot · Tents, Anthems & Pacing",
-    badge: "Oktoberfest Mode",
+    badge: "Prost Mode",
+    guideBtn: "Alois & Guide",
+    mascotName: "Alois the Lion",
+    mascotHint: "🍻 Click for quote & toast!",
+    sideTitle: "🧭 What can Wingman do?",
     title: "Welcome to Wiesn Wingman!",
     desc: "Your personal copilot for beer tents, sing-along brass anthems, bench networking, and surviving tomorrow morning. Tap a topic or ask anything:",
+    features: [
+      {
+        icon: "🎪",
+        name: "Tent Finder & Vibe",
+        desc: "Compares all 14 major tents, crowd vibes, music, and unreserved walk-in chances.",
+        btn: "Find best tent",
+        prompt: "Which Oktoberfest tents have the best atmosphere for tech teams and where can we get in without a reservation?"
+      },
+      {
+        icon: "🎺",
+        name: "Song Whisperer & Audio",
+        desc: "Identifies brass band songs via mic 🎙️ or search. Shows sing-along lyrics & rituals.",
+        btn: "Show 'Ein Prosit' ritual",
+        prompt: "Explain the 'Ein Prosit' toasting ritual and provide the lyrics with phonetic pronunciation."
+      },
+      {
+        icon: "⏱️",
+        name: "BAC & Stamina Pacer",
+        desc: "Estimates blood alcohol content by Maß count and computes readiness for morning meetings.",
+        btn: "Check BAC & Pacing",
+        prompt: "I drank 2 Maß (liters) of Festbier and have a big tech demo tomorrow at 9 AM. Can you calculate my BAC and pacing?"
+      },
+      {
+        icon: "🤝",
+        name: "Beer Bench Icebreakers",
+        desc: "Natural openers for bench neighbors, tech founders, and international attendees.",
+        btn: "Get 3 icebreakers",
+        prompt: "Give me 3 friendly, natural icebreakers to chat with table neighbors on a beer bench."
+      },
+      {
+        icon: "🍗",
+        name: "Tent Food & Bill Split",
+        desc: "Traditional roast chicken, veggie options, and proper Bavarian tipping etiquette.",
+        btn: "Food & tipping tips",
+        prompt: "What traditional food do you recommend in the tents and how should we split the bill with tip?"
+      },
+      {
+        icon: "🥨",
+        name: "Dialect & Bench Etiquette",
+        desc: "Bavarian terms and critical tent rules (standing on benches vs. forbidden table dancing).",
+        btn: "Learn tent etiquette",
+        prompt: "What are the most important Bavarian Oktoberfest terms (O'zapft is, Noagerl, Brezn) and the biggest bench no-gos?"
+      },
+      {
+        icon: "🏅",
+        name: "Survivor Badge",
+        desc: "Generates your personalized vintage Oktoberfest Survivor Certificate.",
+        btn: "Create my badge",
+        prompt: "Generate an Oktoberfest Beer Bench Survivor Badge for 2 Maß of beer and loud brass sing-alongs!"
+      }
+    ],
+    glossaryTitle: "💡 Quick Bavarian Glossary",
+    glossary: [
+      { term: "Maß", def: "1 liter beer stein", prompt: "How strong is an Oktoberfest Maß and how much does it cost?" },
+      { term: "Noagerl", def: "Warm leftover dregs in the glass (don't drink!)", prompt: "What is a Noagerl and why do Bavarians leave it?" },
+      { term: "O'zapft is", def: "It is tapped! (official opening)", prompt: "Explain the opening tradition behind 'O'zapft is'!" },
+      { term: "Gsuffa", def: "One, two, three, drink up!", prompt: "What does Gsuffa mean and when is it chanted?" },
+      { term: "Schunkeln", def: "Swaying arm-in-arm to brass music", prompt: "How do you sway (schunkeln) properly on a beer bench?" },
+      { term: "Brezn", def: "Giant salted Bavarian pretzel", prompt: "What makes an authentic Bavarian Wiesn-Brezn special?" }
+    ],
     tiles: [
       {
         icon: "🎪",
@@ -628,10 +1255,77 @@ const CONTENT = {
   }
 };
 
+/* --- Acoustic Web Audio API Prost Clink Sound --- */
+function playProstClink() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+    [1850, 2220, 2780].forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + idx * 0.015);
+      gain.gain.setValueAtTime(0.22 / (idx + 1), now + idx * 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65 + idx * 0.1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + idx * 0.015);
+      osc.stop(now + 0.85);
+    });
+  } catch (e) {}
+}
+
+function spawnFloatingToast(x, y) {
+  const emojis = ["🍻", "🥨", "🍺", "✨", "🦁", "❤️"];
+  for (let i = 0; i < 5; i++) {
+    const p = document.createElement("div");
+    p.className = "toast-particle";
+    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    p.style.left = (x + (Math.random() * 60 - 30)) + "px";
+    p.style.top = (y + (Math.random() * 40 - 20)) + "px";
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1400);
+  }
+}
+
+function triggerAloisInteraction(ev) {
+  playProstClink();
+  aloisWrap.classList.remove("cheering");
+  void aloisWrap.offsetWidth; // trigger reflow
+  aloisWrap.classList.add("cheering");
+
+  const rect = aloisWrap.getBoundingClientRect();
+  spawnFloatingToast(rect.left + rect.width / 2, rect.top + 20);
+
+  // Cycle Quote
+  const quotes = ALOIS_QUOTES[currentLang];
+  quoteIdx = (quoteIdx + 1) % quotes.length;
+  mascotQuote.textContent = quotes[quoteIdx];
+}
+
+aloisWrap.addEventListener("click", triggerAloisInteraction);
+mascotBubble.addEventListener("click", triggerAloisInteraction);
+toastTag.addEventListener("click", (ev) => {
+  const r = toastTag.getBoundingClientRect();
+  spawnFloatingToast(r.left + r.width / 2, r.top);
+  triggerAloisInteraction();
+});
+logoIcon.addEventListener("click", (ev) => {
+  const r = logoIcon.getBoundingClientRect();
+  spawnFloatingToast(r.left + r.width / 2, r.top);
+  playProstClink();
+});
+
 function renderUI() {
   const c = CONTENT[currentLang];
   headerSub.textContent = c.sub;
   headerBadge.textContent = c.badge;
+  guideToggleLabel.textContent = c.guideBtn;
+  sideTitle.textContent = c.sideTitle;
+  mascotName.textContent = c.mascotName;
+  mascotHint.textContent = c.mascotHint;
   heroTitle.textContent = c.title;
   heroDesc.textContent = c.desc;
   input.placeholder = c.placeholder;
@@ -640,7 +1334,52 @@ function renderUI() {
   uploadBtn.title = c.uploadTitle;
   cancelRecBtn.textContent = c.cancelText;
 
-  // Render Tiles
+  // Set initial mascot quote for language
+  const quotes = ALOIS_QUOTES[currentLang];
+  mascotQuote.textContent = quotes[quoteIdx % quotes.length];
+
+  // Render Sidebar Features
+  sidebarContent.innerHTML = "";
+  c.features.forEach(f => {
+    const card = document.createElement("div");
+    card.className = "feature-card";
+    card.innerHTML = `
+      <div class="feat-top">
+        <span class="feat-icon">${f.icon}</span>
+        <span class="feat-name">${f.name}</span>
+      </div>
+      <div class="feat-desc">${f.desc}</div>
+      <button type="button" class="feat-action-btn">
+        <span>${f.btn}</span>
+        <span class="arr">→</span>
+      </button>
+    `;
+    card.querySelector("button").onclick = () => {
+      closeMobileSidebar();
+      sendPrompt(f.prompt);
+    };
+    sidebarContent.appendChild(card);
+  });
+
+  // Render Sidebar Glossary
+  const glossCard = document.createElement("div");
+  glossCard.className = "glossary-card";
+  glossCard.innerHTML = `<div class="glossary-title">${c.glossaryTitle}</div><div class="glossary-pills"></div>`;
+  const pillBox = glossCard.querySelector(".glossary-pills");
+  c.glossary.forEach(g => {
+    const pill = document.createElement("div");
+    pill.className = "glossary-pill";
+    pill.title = g.def;
+    pill.innerHTML = `<b>${g.term}:</b> ${g.def}`;
+    pill.onclick = () => {
+      closeMobileSidebar();
+      sendPrompt(g.prompt);
+    };
+    pillBox.appendChild(pill);
+  });
+  sidebarContent.appendChild(glossCard);
+
+  // Render Starter Hero Tiles
   tilesGrid.innerHTML = "";
   c.tiles.forEach(t => {
     const btn = document.createElement("button");
@@ -675,6 +1414,18 @@ function switchLang(lang) {
   document.documentElement.lang = lang;
   renderUI();
 }
+
+function closeMobileSidebar() {
+  sidebar.classList.remove("open");
+  sidebarOverlay.classList.remove("open");
+}
+
+guideToggleBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
+  sidebarOverlay.classList.toggle("open");
+});
+
+sidebarOverlay.addEventListener("click", closeMobileSidebar);
 
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
@@ -806,6 +1557,10 @@ async function postChat(payload, userBubbleContent) {
   const userB = bubble("user");
   userB.innerHTML = userBubbleContent;
   
+  // Alois reacts while thinking
+  mascotQuote.textContent = currentLang === "de" ? "\"I hör dir zua... Wart kurz, i überleg! 🦁\"" : "\"Listening carefully... Thinking it over! 🦁\"";
+  playProstClink();
+
   const b = bubble("agent"); b.textContent = "…";
   try {
     const res = await fetch("/chat", {
@@ -818,8 +1573,14 @@ async function postChat(payload, userBubbleContent) {
     try { data = JSON.parse(raw); }
     catch { throw new Error(`Server returned non-JSON (HTTP ${res.status}). ${raw.slice(0, 300)}`); }
     renderReply(b, data.parts || []);
+    
+    // Alois cheerful toast on reply
+    aloisWrap.classList.add("cheering");
+    setTimeout(() => aloisWrap.classList.remove("cheering"), 900);
+    mascotQuote.textContent = currentLang === "de" ? "\"Bittscheen! Host no a Frog? Prost! 🍻\"" : "\"Here you go! Got another question? Cheers! 🍻\"";
   } catch (e) {
     b.textContent = "Error: " + e.message;
+    mascotQuote.textContent = "\"Oha! Da hat sich was verhakt. Probier's nochmal!\"";
   }
 }
 
@@ -841,12 +1602,10 @@ let recordSeconds = 0;
 
 micBtn.addEventListener("click", async () => {
   if (mediaRecorder && mediaRecorder.state === "recording") {
-    // Stop recording and send
     mediaRecorder.stop();
     return;
   }
 
-  // Start recording
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     alert(currentLang === "de" 
       ? "Mikrofonzugriff wird vom Browser nicht unterstützt. Bitte nutze den Datei-Upload (📁)." 
@@ -908,11 +1667,12 @@ micBtn.addEventListener("click", async () => {
     
     const c = CONTENT[currentLang];
     recStatusText.textContent = c.recText.replace("{sec}", recordSeconds);
+    mascotQuote.textContent = currentLang === "de" ? "\"I spitz die Ohren! Sing oder spiel mir was vor! 🎵\"" : "\"Ears perked up! Play or sing a song for me! 🎵\"";
+
     recordTimer = setInterval(() => {
       recordSeconds++;
       recStatusText.textContent = c.recText.replace("{sec}", recordSeconds);
       if (recordSeconds >= 30) {
-        // Auto-stop after 30 seconds
         mediaRecorder.stop();
       }
     }, 1000);

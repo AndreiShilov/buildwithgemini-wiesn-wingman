@@ -83,6 +83,10 @@ from app.menu_tools import (
 from app.image_gen_tools import (
     generate_bierbank_survivor_badge,
 )
+from app.transit_tools import (
+    check_tent_occupancy_barometer,
+    compute_live_transit_escape_route,
+)
 
 
 from google.adk.agents.callback_context import CallbackContext
@@ -178,6 +182,8 @@ root_agent = Agent(
         get_tent_food_menu,
         calculate_bill_and_tip_split,
         generate_bierbank_survivor_badge,
+        check_tent_occupancy_barometer,
+        compute_live_transit_escape_route,
     ],
     after_model_callback=a2ui_callback,
     after_agent_callback=generate_memories_callback,

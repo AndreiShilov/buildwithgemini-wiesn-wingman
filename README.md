@@ -48,6 +48,15 @@ WiesnWingman helps festival-goers and tech attendees navigate Oktoberfest beer t
   * Wired as an `after_model_callback` (`app/a2ui_utils.py`) with schema system prompt integration (`app/a2ui_instruction.py`).
   * Formats responses into cards, columns, typography hints, and image components.
 
+* **🚦 Live Wiesn-Barometer & Tent Occupancy (`app/transit_tools.py`)**:
+  * Real-time Oktoberfest crowd occupancy level checker (`check_tent_occupancy_barometer`).
+  * Tracks door status, queue wait times, and alerts users immediately when tents are closed due to overcrowding (*Wegen Überfüllung geschlossen*).
+  * Persists live telemetry state in Cloud Firestore (`live_wiesn_barometer` collection).
+
+* **🚇 Smart Transit Bottleneck & Escape Routing (`app/transit_tools.py`)**:
+  * Dynamically computes crowd-aware transit escape routes (`compute_live_transit_escape_route`).
+  * Protects users from getting trapped in **Theresienwiese (U4/U5)** crowd bottlenecks and police gate closures (*Blockabfertigung*) by calculating walking escape paths to alternative stations (**Goetheplatz U3/U6**, **Schwanthalerhöhe U4/U5**, or **Hackerbrücke S-Bahn** trunk line).
+
 ---
 
 ## ☁️ Google Cloud Services Used
@@ -56,7 +65,7 @@ WiesnWingman helps festival-goers and tech attendees navigate Oktoberfest beer t
 | :--- | :--- |
 | **Agent Engine / Agent Runtime** | Hosting and executing the agent container over the A2A protocol (`google-adk`). |
 | **Vertex AI Memory Bank** | Managed cross-session memory service storing user preferences. |
-| **Cloud Firestore** | NoSQL database hosting the live Oktoberfest tent directory and etiquette rules. |
+| **Cloud Firestore** | NoSQL database hosting tent directory, etiquette rules, and live barometer telemetry. |
 | **Google Cloud Storage** | Storing and serving generated Bierbank Survivor badges and demo media. |
 | **Gemini 2.5 Flash (Vertex AI)** | Multimodal reasoning, live audio recognition, and conversational orchestration. |
 | **Gemini 3.1 Flash-Lite Image / Imagen** | Generating vintage commemorative Bierbank badges and survivor certificates. |
@@ -72,7 +81,9 @@ WiesnWingman helps festival-goers and tech attendees navigate Oktoberfest beer t
 * ✅ **Menu & Tip Splitter**: Implemented and verified.
 * ✅ **Imagen Badge Generation & Cloud Storage Upload**: Implemented and verified.
 * ✅ **A2UI v0.8 Cards**: Implemented and verified.
-* ⏳ **Direct Live MVG API Transit Integration**: *Planned, not yet implemented* (transit advice currently provided via Firestore tent transit metadata and stored user route preferences).
+* ✅ **Live Wiesn-Barometer & Tent Occupancy Alerts**: Implemented and verified.
+* ✅ **Crowd-Aware Escape Routing (Goetheplatz / Hackerbrücke / Schwanthalerhöhe)**: Implemented and verified.
+* ⏳ **Third-party MVG REST API token auth integration**: *Planned, not yet implemented* (transit intelligence currently runs autonomously using station hub heuristics and Firestore telemetry).
 
 ---
 
